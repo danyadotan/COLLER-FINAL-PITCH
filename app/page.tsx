@@ -18,7 +18,7 @@ export default function CollerPitchDeck() {
   const pitchText = "Hi, I'm TAB.\nToday, enterprise software is broken. We force employees to act as 'operators' navigating endless tabs, leading to massive productivity loss.\n\nUnlike traditional AI that passively waits for a prompt, I focus on the exact moment work doesn't start. I detect hesitation and trigger a personalized AI micro-intervention, converting 'stuck' into an immediate first action within 5 seconds.\n\nExplore my architecture below, or click 'Interview TAB' to ask me the hard questions.";
 
   // API Key (from Vercel Environment Variables)
-  const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || "";
+  const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || ""; 
 
   // Trigger Intro Sequence
   useEffect(() => {
@@ -73,7 +73,8 @@ export default function CollerPitchDeck() {
     };
 
     try {
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
+      // כאן התיקון: מעבר למודל 1.5-flash היציב והפתוח לכולם
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(apiPayload)
@@ -82,7 +83,7 @@ export default function CollerPitchDeck() {
       if (!response.ok) throw new Error("API Error");
       const data = await response.json();
       const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
-
+      
       setChatMessages(prev => [...prev, { role: 'assistant', content: reply }]);
     } catch (error) {
       setChatMessages(prev => [...prev, { role: 'assistant', content: "I'm currently unable to connect to the network to answer. Please check the API configuration." }]);
@@ -95,7 +96,7 @@ export default function CollerPitchDeck() {
 
   return (
     <div className="min-h-screen bg-[#F5F5F3] font-sans text-slate-900 relative overflow-x-hidden selection:bg-indigo-200">
-
+      
       {/* --- PITCH DECK BACKGROUND (The Architecture) --- */}
       <main className="max-w-7xl mx-auto p-8 md:p-16 pb-32">
         <header className="mb-16">
@@ -106,7 +107,7 @@ export default function CollerPitchDeck() {
             TAB<span className="font-medium text-indigo-600">@Work</span>
           </h1>
           <p className="text-2xl text-slate-500 font-light max-w-2xl leading-relaxed">
-            Three layers.<br />
+            Three layers.<br/>
             <span className="italic text-slate-800">One unbroken loop.</span>
           </p>
           <p className="mt-4 text-sm text-slate-500 max-w-xl">
@@ -159,75 +160,76 @@ export default function CollerPitchDeck() {
 
         {/* Level 2 & 3 */}
         <div className="flex flex-col md:flex-row gap-8 opacity-60 hover:opacity-100 transition-opacity duration-500">
-          <section className="flex-1 bg-white rounded-[2rem] p-8 shadow-xl border border-slate-200 flex flex-col justify-center items-center text-center min-h-[200px]">
-            <Layers className="w-8 h-8 text-indigo-400 mb-4" />
-            <h3 className="text-xl font-bold text-slate-800 mb-2">Team TAB</h3>
-            <p className="text-slate-500 text-sm">Cross-functional context & alignment.</p>
-            <div className="mt-4 bg-slate-100 text-xs px-3 py-1 rounded-full text-slate-500 uppercase tracking-wider font-bold">Layer 2</div>
-          </section>
-          <section className="flex-1 bg-white rounded-[2rem] p-8 shadow-xl border border-slate-200 flex flex-col justify-center items-center text-center min-h-[200px]">
-            <Cpu className="w-8 h-8 text-indigo-400 mb-4" />
-            <h3 className="text-xl font-bold text-slate-800 mb-2">Org TAB</h3>
-            <p className="text-slate-500 text-sm">Macro friction analytics & resource routing.</p>
-            <div className="mt-4 bg-slate-100 text-xs px-3 py-1 rounded-full text-slate-500 uppercase tracking-wider font-bold">Layer 3</div>
-          </section>
+           <section className="flex-1 bg-white rounded-[2rem] p-8 shadow-xl border border-slate-200 flex flex-col justify-center items-center text-center min-h-[200px]">
+              <Layers className="w-8 h-8 text-indigo-400 mb-4" />
+              <h3 className="text-xl font-bold text-slate-800 mb-2">Team TAB</h3>
+              <p className="text-slate-500 text-sm">Cross-functional context & alignment.</p>
+              <div className="mt-4 bg-slate-100 text-xs px-3 py-1 rounded-full text-slate-500 uppercase tracking-wider font-bold">Layer 2</div>
+           </section>
+           <section className="flex-1 bg-white rounded-[2rem] p-8 shadow-xl border border-slate-200 flex flex-col justify-center items-center text-center min-h-[200px]">
+              <Cpu className="w-8 h-8 text-indigo-400 mb-4" />
+              <h3 className="text-xl font-bold text-slate-800 mb-2">Org TAB</h3>
+              <p className="text-slate-500 text-sm">Macro friction analytics & resource routing.</p>
+              <div className="mt-4 bg-slate-100 text-xs px-3 py-1 rounded-full text-slate-500 uppercase tracking-wider font-bold">Layer 3</div>
+           </section>
         </div>
       </main>
 
-      {/* --- TAB AGENT LAYER --- */}
 
+      {/* --- TAB AGENT LAYER --- */}
+      
       {/* Background Dimmer */}
-      <div
+      <div 
         className={`fixed inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity duration-1000 z-40
           ${isOverlayActive ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
         onClick={() => setTabState('minimized')}
       />
 
       {/* Floating Agent Container */}
-      <div
+      <div 
         className={`fixed z-50 transition-all duration-700 cubic-bezier(0.16, 1, 0.3, 1) flex flex-col
-          ${isOverlayActive
-            ? 'top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[90%] md:w-[600px] items-center'
+          ${isOverlayActive 
+            ? 'top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[90%] md:w-[600px] items-center' 
             : 'bottom-8 left-8 w-16 items-start'}`}
       >
-
+        
         {/* Avatar */}
-        <div
+        <div 
           onClick={() => tabState === 'minimized' && setTabState('chat')}
           className={`bg-indigo-600 rounded-3xl flex items-center justify-center shadow-2xl cursor-pointer transition-all duration-500 overflow-hidden ring-4 ring-white/10
             ${isOverlayActive ? 'w-24 h-24 mb-8 shadow-indigo-500/30' : 'w-16 h-16 hover:scale-110 hover:shadow-indigo-500/50'}`}
         >
-          <img
-            src="/TAB_Logo.jpg"
-            alt="TAB"
+          <img 
+            src="/TAB_Logo.jpg" 
+            alt="TAB" 
             className="w-full h-full object-cover"
-            onError={(e) => { e.target.style.display = 'none'; if (e.target.nextSibling) e.target.nextSibling.style.display = 'block'; }}
+            onError={(e) => { e.target.style.display = 'none'; if (e.target.nextSibling) e.target.nextSibling.style.display = 'block'; }} 
           />
           <Bot className="hidden text-white w-1/2 h-1/2" />
         </div>
 
         {/* Content Box */}
-        <div
+        <div 
           className={`bg-white rounded-3xl shadow-2xl overflow-hidden transition-all duration-700 w-full relative
             ${isOverlayActive ? 'opacity-100 scale-100 max-h-[700px]' : 'opacity-0 scale-90 max-h-0'}`}
         >
-
+          
           {/* STATE 1: PITCH INTRO */}
           {tabState === 'pitch_intro' && (
             <div className="p-8 md:p-10">
               <div className="text-xl md:text-2xl leading-relaxed whitespace-pre-wrap font-medium text-slate-800">
                 {typedMessage}
               </div>
-
+              
               <div className="mt-10 flex flex-col sm:flex-row justify-end gap-3 opacity-0 animate-[fadeIn_0.5s_ease-in-out_8s_forwards]">
-                <button
-                  onClick={() => setTabState('minimized')}
+                <button 
+                  onClick={() => setTabState('minimized')} 
                   className="px-6 py-3.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold transition-colors w-full sm:w-auto text-center"
                 >
                   Explore Architecture
                 </button>
-                <button
-                  onClick={() => setTabState('chat')}
+                <button 
+                  onClick={() => setTabState('chat')} 
                   className="px-6 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition-colors flex items-center justify-center gap-2 w-full sm:w-auto shadow-lg shadow-indigo-500/30"
                 >
                   Interview TAB <ArrowRight className="w-4 h-4" />
@@ -256,10 +258,11 @@ export default function CollerPitchDeck() {
               <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-white">
                 {chatMessages.map((msg, idx) => (
                   <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                    <div className={`max-w-[85%] p-4 rounded-2xl text-sm leading-relaxed ${msg.role === 'user'
-                      ? 'bg-indigo-600 text-white rounded-br-sm'
-                      : 'bg-slate-100 text-slate-800 rounded-bl-sm'
-                      }`}>
+                    <div className={`max-w-[85%] p-4 rounded-2xl text-sm leading-relaxed ${
+                      msg.role === 'user' 
+                        ? 'bg-indigo-600 text-white rounded-br-sm' 
+                        : 'bg-slate-100 text-slate-800 rounded-bl-sm'
+                    }`}>
                       {msg.content}
                     </div>
                   </div>
@@ -287,8 +290,8 @@ export default function CollerPitchDeck() {
                     className="w-full bg-slate-100 border-transparent focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 rounded-xl py-3.5 pl-4 pr-12 text-sm outline-none transition-all"
                     disabled={isLoading}
                   />
-                  <button
-                    type="submit"
+                  <button 
+                    type="submit" 
                     disabled={!inputValue.trim() || isLoading}
                     className="absolute right-2 p-2 bg-indigo-600 text-white rounded-lg disabled:opacity-50 disabled:bg-slate-400 hover:bg-indigo-700 transition-colors"
                   >
